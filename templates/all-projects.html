@@ -1,0 +1,127 @@
+{% block content %}{% include 'header.html' %}
+<header
+  class="masthead"
+  style="background-color: #609158"
+>
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="page-heading">
+          <h2 class="display-8" style="color:white;font-family: Times New Roman, Times, serif">All Projects</h2>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+  <div class="col-lg-8 col-md-10 mx-auto">
+  {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      {% for message in messages %}
+      <p class="flash">{{ message }}</p>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+        <!--Rendering login form here-->
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <form class="form-inline" action="{{url_for('search_projects')}}" method="post">
+ <div class="col-md-3 col-lg-4 col-xl-5 py-2 container">
+  <input class=" form-control" placeholder="Search Input" name="input_name">
+      </div>
+</form>
+        {% if search %}
+        <h2 class="display-8" style="color:white;font-family: Times New Roman, Times, serif">All Results</h2>
+        {% else %}
+
+      <h2 class="display-8" style="color:white;font-family: Times New Roman, Times, serif">All Projects</h2>
+        {% endif %}
+        {% if not search %}
+        <div style="color:white">
+        {{ pagination.info }}
+            </div>
+        {% endif %}
+	  <table class="table table-success table-striped table-hover">
+          <thead>
+
+
+    <tr style="color: #fff">
+      <th scope="col">Project Id</th>
+      <th scope="col">Project Name</th>
+      <th scope="col">Project Description</th>
+        <th scope="col">Date</th>
+        <th scope="col">Track Number</th>
+        <th scope="col">Permissions</th>
+    </tr>
+  </thead>
+  <tbody>
+
+  {% for project in projects %}
+  <tr >
+      <th scope="row">{{ project.id}}</th>
+      <td>{{ project.project_name}}</td>
+      <td>{{ project.description|safe}}</td>
+      <td>{{ project.date }}</td>
+      <td>{{ project.track_number }}</td>
+      <td class="pt-1"><div class="btn-group" style="height:20px">
+<!-- Example split danger button -->
+          <div class="btn-group">
+
+              {% if current_user.display_project == 2 %}
+  <button type="button" style="background-color: #609158; color:white" class="btn btn pt-0" onclick="location.href='{{url_for('display_project', project_id=project.id)}}'">Display</button>
+              {% endif %}
+              {% if current_user.display_project == 1 %}
+                <button type="button" style="background-color: #609158; color:white" class="btn btn pt-0" onclick="location.href='#">Permission</button>
+              {% endif %}
+  <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split pt-0" style="background-color: #609158; color:white" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+              {% if current_user.edit_project == 2 or current_user.add_project_details == 2 or current_user.add_subcontractor_opening_balance == 2 or current_user.add_subcontractor_cash_out == 2 or current_user.display_subcontractor_account == 2 or current_user.display_project_cost == 2 %}
+  <ul class="dropdown-menu">
+      {% if current_user.edit_project == 2 %}
+
+    <li><a class="dropdown-item" href="{{url_for('edit_project', project_id=project.id)}}">Edit Project</a></li>
+       {% endif %}
+      {% if current_user.add_project_details == 2 %}
+
+       <li><a class="dropdown-item" href="{{url_for('add_project_details', project_id=project.id)}}">Add Project Details</a></li>
+      {% endif %}
+      {% if  current_user.add_subcontractor_opening_account == 2  %}
+
+      <li><a class="dropdown-item" href="{{url_for('add_subcontractor_opening_balance', project_id=project.id)}}"> Add Subcontractors Opening Balance</a></li>
+      {% endif %}
+      {% if current_user.add_subcontractor_cash_out == 2 %}
+
+       <li><a class="dropdown-item" href="{{url_for('insert_subcontractor_cash_out', project_id=project.id)}}"> Add Subcontractors Cash Out</a></li>
+      {% endif %}
+      {% if current_user.display_subcontractor_account == 2  %}
+
+      <li><a class="dropdown-item" href="{{url_for('display_subcontractor_accounts', project_id=project.id)}}"> Display Subcontractor Account</a></li>
+       {% endif %}
+      {% if current_user.display_project_cost == 2 %}
+      <li><a class="dropdown-item" href="{{url_for('display_project_cost', project_id=project.id)}}"> Display Project Cost</a></li>
+      {% endif %}
+  </ul>
+              {% endif %}
+
+</div></div></td>
+
+    </tr>
+  {% endfor %}
+  </tbody>
+  	  </table>
+        {% if not search %}
+        {{ pagination.links }}
+        {% endif %}
+        {% if current_user.add_project == 2 %}
+        <p style="color:white"><a style="color:white" href="{{ url_for('add_project') }}">Add Project</a></p>
+        {% endif %}
+
+    </div>
+  </div>
+</div>
+
+{% include 'footer.html' %}{% endblock %}

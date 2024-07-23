@@ -1,0 +1,99 @@
+{% block content %}{% include 'header.html' %}
+<header
+  class="masthead"
+  style="background-color: #609158"
+>
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="page-heading">
+            {% if search %}
+        <h2 class="display-8" style="color:white;font-family: Times New Roman, Times, serif" >All Employees Result</h2>
+        {% else %}
+
+          <h2 class="display-8" style="color:white;font-family: Times New Roman, Times, serif" >All Employees</h2>
+        {% endif %}
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+ {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      {% for message in messages %}
+      <p class="flash">{{ message }}</p>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <form class="form-inline" action="{{url_for('search_employees')}}" method="post">
+ <div class="col-md-3 col-lg-4 col-xl-5 py-2 container">
+  <input class=" form-control" placeholder="Search Input" name="input_name">
+      </div>
+</form>
+        {% if search %}
+        <h2  class="display-8" style="color:white;font-family: Times New Roman, Times, serif">All Employees Results Sheet </h2>
+        {% else %}
+      <h2 class="display-8" style="color:white;font-family: Times New Roman, Times, serif">All Employees sheet</h2>
+        {% endif %}
+
+	  <table class="table table-success table-striped table-hover">
+          <thead>
+
+
+    <tr style="color: #fff">
+      <th scope="col">Employee Id</th>
+      <th scope="col">Employee Name</th>
+      <th scope="col">Job Title</th>
+        <th scope="col">Total Salary</th>
+        <th scope="col">Permissions</th>
+    </tr>
+  </thead>
+  <tbody>
+
+  {% for employee in employees %}
+  <tr >
+      <th scope="row">{{ employee.id}}</th>
+      <td>{{ employee.name}}</td>
+      <td>{{ employee.description}}</td>
+      <td>{{ employee.total_salary }}</td>
+      <td class="pt-1"><div class="btn-group" style="height:20px">
+<!-- Example split danger button -->
+          <div class="btn-group">
+    {% if current_user.display_employee_salary == 2 %}
+  <button type="button" class="btn btn-success pt-0" onclick="location.href='{{url_for('display_employee_salaries',employee_id=employee.id)}}'">Display</button>
+              {% else %}
+              <button type="button" class="btn btn-success pt-0" onclick="location.href='#'">Permissions</button>
+              {% endif %}
+  <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split pt-0" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+              {% if current_user.edit_employee_details == 2 %}
+  <ul class="dropdown-menu">
+    <li><a class="dropdown-item" href="{{url_for('edit_employee_details',employee_id=employee.id)}}">Edit Employee Details</a></li>
+
+
+  </ul>
+              {% endif %}
+
+</div></div></td>
+
+    </tr>
+  {% endfor %}
+  </tbody>
+  	  </table>
+        {% if current_user.add_employee == 2 %}
+        <p ><a style="color:white" href="{{ url_for('add_employee_details') }}">Add Employee</a></p>
+        {% endif %}
+
+    </div>
+  </div>
+</div>
+
+{% include 'footer.html' %}{% endblock %}

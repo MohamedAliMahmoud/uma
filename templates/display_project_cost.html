@@ -1,0 +1,761 @@
+{% block content %}{% include 'header.html' %}
+<header
+  class="masthead"
+  style="background-color: #609158"
+>
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="page-heading">
+          <h2 class="display-8" style="color:white;font-family: Times New Roman, Times, serif">Display Project Cost</h2>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+
+      <h2 class="display-8" style="color:white;font-family: Times New Roman, Times, serif">Quotation</h2>
+
+	  <table class="table table-success table-striped table-hover">
+          <thead>
+
+
+    <tr style="color: #fff">
+      <th scope="col">Quotation Id</th>
+      <th scope="col">Quotation Name</th>
+      <th scope="col">Quotation Description</th>
+        <th scope="col">Quotation Total</th>
+        <th scope="col">Date</th>
+        <th scope="col">Permissions</th>
+    </tr>
+  </thead>
+  <tbody>
+
+
+  <tr >
+      <th scope="row">{{ project.id}}</th>
+      <td>{{ project.project_name}}</td>
+      <td>{{ project.description|safe}}</td>
+      <td>{{ project.total}}</td>
+      <td>{{ project.date }}</td>
+  <td class="pt-1"><div class="btn-group" style="height:20px">
+<!-- Example split danger button -->
+          <div class="btn-group">
+              {% if current_user.display_project == 2 %}
+  <button type="button" style="background-color: #609158; color:white" class="btn btn pt-0" onclick="location.href='{{url_for('display_project', project_id=project.id)}}'">Display</button>
+              {% endif %}
+              {% if current_user.display_project == 1 %}
+                <button type="button" style="background-color: #609158; color:white" class="btn btn pt-0" onclick="location.href='#">Permission</button>
+              {% endif %}
+  <button type="button" style="background-color: #609158" class="btn btn-success dropdown-toggle dropdown-toggle-split pt-0" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+               {% if current_user.edit_project == 2 or current_user.add_project_details == 2 or current_user.add_subcontractor_opening_balance == 2 or current_user.add_subcontractor_cash_out == 2 or current_user.display_subcontractor_account == 2 or current_user.display_project_cost == 2 or current_user.upload_file == 2 or current_user.download_file == 2 or current_user.delete_file == 2 %}
+  <ul class="dropdown-menu">
+      {% if current_user.edit_project == 2 %}
+    <li><a class="dropdown-item" href="{{url_for('edit_project', project_id=project.id)}}">Edit Project</a></li>
+      {% endif %}
+      {% if current_user.add_project_details == 2 %}
+       <li><a class="dropdown-item" href="{{url_for('add_project_details', project_id=project.id)}}">Add Project Details</a></li>
+      {% endif %}
+      {% if  current_user.add_subcontractor_opening_account == 2  %}
+      <li><a class="dropdown-item" href="{{url_for('add_subcontractor_opening_balance', project_id=project.id)}}"> Add Subcontractors Opening Balance</a></li>
+      {% endif %}
+      {% if current_user.add_subcontractor_cash_out == 2 %}
+       <li><a class="dropdown-item" href="{{url_for('insert_subcontractor_cash_out', project_id=project.id)}}"> Add Subcontractors Cash Out</a></li>
+      {% endif %}
+      {% if current_user.display_subcontractor_account == 2 %}
+      <li><a class="dropdown-item" href="{{url_for('display_subcontractor_accounts', project_id=project.id)}}"> Display Subcontractor Account</a></li>
+      {% endif %}
+      {% if current_user.display_project_cost == 2 %}
+      <li><a class="dropdown-item" href="{{url_for('display_project_cost', project_id=project.id)}}"> Display Project Cost</a></li>
+      {% endif %}
+      {% if project.file_path %}
+      {% if current_user.download_file == 2 %}
+      <li><a class="dropdown-item" href="{{ url_for('download_file',name=project.file_path)}}">Download File</a></li>
+      {% endif %}
+      {% if current_user.delete_file== 2 %}
+       <li><a class="dropdown-item" href="{{ url_for('delete_upload_file', name='Project', id=project.id)}}">Delete File</a></li>
+      {% endif %}
+      {% else %}
+      {% if current_user.upload_file == 2 %}
+      <li><a class="dropdown-item" href="{{url_for('upload_file', name='Project', id=project.id)}}"> Upload File</a></li>
+      {% endif %}
+      {% endif %}
+
+  </ul>
+              {% endif %}
+
+</div></div></td>
+
+    </tr>
+
+  </tbody>
+  	  </table>
+        {% if plumbing %}
+        <h1 style="color:white">Plumbing Cost</h1>
+      <table class="table table-success table-striped table-hover">
+          <thead>
+
+
+    <tr style="color: #fff">
+      <th scope="col">Description</th>
+      <th scope="col">Total</th>
+        <th scope="col">Date</th>
+        <th scope="col">User Id</th>
+        <th scope="col">Permission</th>
+    </tr>
+  </thead>
+  <tbody>
+
+
+  <tr >
+    {% for cost in plumbing: %}
+      <th scope="row">{{ cost.description|safe}}</th>
+      <td>{{ cost.total}}</td>
+      <td>{{ cost.date}}</td>
+      <td>{{cost.user_id}}</td>
+      <td class="pt-1"><div class="btn-group" style="height:20px">
+<!-- Example split danger button -->
+          <div class="btn-group">
+
+  <button type="button" class="btn btn-success pt-0" style="background-color: #609158; color:white" onclick="location.href='#'">Permissions</button>
+  <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split pt-0" style="background-color: #609158; color:white" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+
+   {% if cost.file_path %}
+              {% if current_user.download_file == 2 %}
+              <ul class="dropdown-menu">
+      <li><a class="dropdown-item" href="{{ url_for('download_file',name=cost.file_path)}}">Download File</a></li>
+                  </ul>
+              {% endif %}
+      {% endif %}
+
+  </ul>
+
+</div></div></td>
+
+    </tr>
+  {% endfor %}
+  <tr>
+      <th scope="row">Total Cost</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>{{total_plumbing}}</td>
+
+
+  </tr>
+
+  </tbody>
+  	  </table>
+        {% endif %}
+                {% if electric %}
+        <h1 style="color:white">Electric Cost</h1>
+      <table class="table table-success table-striped table-hover">
+          <thead>
+
+
+    <tr style="color: #fff">
+      <th scope="col">Description</th>
+      <th scope="col">Total</th>
+        <th scope="col">Date</th>
+        <th scope="col">User Id</th>
+        <th scope="col">Permission</th>
+    </tr>
+  </thead>
+  <tbody>
+
+
+  <tr >
+    {% for cost in electric: %}
+      <th scope="row">{{ cost.description|safe}}</th>
+      <td>{{ cost.total}}</td>
+      <td>{{ cost.date}}</td>
+      <td>{{cost.user_id}}</td>
+      <td class="pt-1"><div class="btn-group" style="height:20px">
+<!-- Example split danger button -->
+          <div class="btn-group">
+
+  <button type="button" class="btn btn-success pt-0" style="background-color: #609158; color:white" onclick="location.href='#'">Permissions</button>
+  <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split pt-0" style="background-color: #609158; color:white" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+
+   {% if cost.file_path %}
+                {% if current_user.download_file == 2 %}
+              <ul class="dropdown-menu">
+      <li><a class="dropdown-item" href="{{ url_for('download_file',name=cost.file_path)}}">Download File</a></li>
+                  </ul>
+              {% endif %}
+      {% endif %}
+
+  </ul>
+
+</div></div></td>
+
+    </tr>
+  {% endfor %}
+  <tr>
+      <th scope="row">Total Cost</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>{{total_electric}}</td>
+
+
+  </tr>
+
+  </tbody>
+  	  </table>
+        {% endif %}
+                        {% if air_condition %}
+        <h1 style="color:white">Air Condition Cost</h1>
+      <table class="table table-success table-striped table-hover">
+          <thead>
+
+
+    <tr style="color: #fff">
+      <th scope="col">Description</th>
+      <th scope="col">Total</th>
+        <th scope="col">Date</th>
+        <th scope="col">User Id</th>
+        <th scope="col">Permission</th>
+    </tr>
+  </thead>
+  <tbody>
+
+
+  <tr >
+    {% for cost in air_condition: %}
+      <th scope="row">{{ cost.description|safe}}</th>
+      <td>{{ cost.total}}</td>
+      <td>{{ cost.date}}</td>
+      <td>{{cost.user_id}}</td>
+      <td class="pt-1"><div class="btn-group" style="height:20px">
+<!-- Example split danger button -->
+          <div class="btn-group">
+
+  <button type="button" class="btn btn-success pt-0" style="background-color: #609158; color:white" onclick="location.href='#'">Permissions</button>
+  <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split pt-0" style="background-color: #609158; color:white" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+
+   {% if cost.file_path %}
+                 {% if current_user.download_file == 2 %}
+              <ul class="dropdown-menu">
+      <li><a class="dropdown-item" href="{{ url_for('download_file',name=cost.file_path)}}">Download File</a></li>
+                  </ul>
+              {% endif %}
+      {% endif %}
+
+  </ul>
+
+</div></div></td>
+
+    </tr>
+  {% endfor %}
+  <tr>
+      <th scope="row">Total Cost</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>{{total_air_condition}}</td>
+
+
+  </tr>
+
+  </tbody>
+  	  </table>
+        {% endif %}
+                        {% if black_smith %}
+        <h1 style="color:white">Blacksmith Cost</h1>
+      <table class="table table-success table-striped table-hover">
+          <thead>
+
+
+    <tr style="color: #fff">
+      <th scope="col">Description</th>
+      <th scope="col">Total</th>
+        <th scope="col">Date</th>
+        <th scope="col">User Id</th>
+        <th scope="col">Permission</th>
+    </tr>
+  </thead>
+  <tbody>
+
+
+  <tr >
+    {% for cost in black_smith: %}
+      <th scope="row">{{ cost.description|safe}}</th>
+      <td>{{ cost.total}}</td>
+      <td>{{ cost.date}}</td>
+      <td>{{cost.user_id}}</td>
+      <td class="pt-1"><div class="btn-group" style="height:20px">
+<!-- Example split danger button -->
+          <div class="btn-group">
+
+  <button type="button" class="btn btn-success pt-0" style="background-color: #609158; color:white" onclick="location.href='#'">Permissions</button>
+  <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split pt-0" style="background-color: #609158; color:white" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+
+   {% if cost.file_path %}
+               {% if current_user.download_file == 2 %}
+              <ul class="dropdown-menu">
+      <li><a class="dropdown-item" href="{{ url_for('download_file',name=cost.file_path)}}">Download File</a></li>
+                  </ul>
+              {% endif %}
+      {% endif %}
+
+  </ul>
+
+</div></div></td>
+
+    </tr>
+  {% endfor %}
+  <tr>
+      <th scope="row">Total Cost</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>{{total_black_smith}}</td>
+
+
+  </tr>
+
+  </tbody>
+  	  </table>
+        {% endif %}
+
+        {% if carpentry %}
+        <h1 style="color:white">Carpentry Cost</h1>
+      <table class="table table-success table-striped table-hover">
+          <thead>
+
+
+    <tr style="color: #fff">
+      <th scope="col">Description</th>
+      <th scope="col">Total</th>
+        <th scope="col">Date</th>
+        <th scope="col">User Id</th>
+        <th scope="col">Permission</th>
+    </tr>
+  </thead>
+  <tbody>
+
+
+  <tr >
+    {% for cost in carpentry: %}
+      <th scope="row">{{ cost.description|safe}}</th>
+      <td>{{ cost.total}}</td>
+      <td>{{ cost.date}}</td>
+      <td>{{cost.user_id}}</td>
+      <td class="pt-1"><div class="btn-group" style="height:20px">
+<!-- Example split danger button -->
+          <div class="btn-group">
+
+  <button type="button" class="btn btn-success pt-0" style="background-color: #609158; color:white" onclick="location.href='#'">Permissions</button>
+  <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split pt-0" style="background-color: #609158; color:white" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+
+   {% if cost.file_path %}
+                {% if current_user.download_file == 2 %}
+              <ul class="dropdown-menu">
+      <li><a class="dropdown-item" href="{{ url_for('download_file',name=cost.file_path)}}">Download File</a></li>
+                  </ul>
+              {% endif %}
+      {% endif %}
+
+  </ul>
+
+</div></div></td>
+
+    </tr>
+  {% endfor %}
+  <tr>
+      <th scope="row">Total Cost</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>{{total_carpentry}}</td>
+
+
+  </tr>
+
+  </tbody>
+  	  </table>
+        {% endif %}
+        {% if wall_cement %}
+        <h1 style="color:white">Wall Cement Cost</h1>
+      <table class="table table-success table-striped table-hover">
+          <thead>
+
+
+    <tr style="color: #fff">
+      <th scope="col">Description</th>
+      <th scope="col">Total</th>
+        <th scope="col">Date</th>
+        <th scope="col">User Id</th>
+        <th scope="col">Permission</th>
+    </tr>
+  </thead>
+  <tbody>
+
+
+  <tr >
+    {% for cost in wall_cement: %}
+      <th scope="row">{{ cost.description|safe}}</th>
+      <td>{{ cost.total}}</td>
+      <td>{{ cost.date}}</td>
+      <td>{{cost.user_id}}</td>
+      <td class="pt-1"><div class="btn-group" style="height:20px">
+<!-- Example split danger button -->
+          <div class="btn-group">
+
+  <button type="button" class="btn btn-success pt-0" style="background-color: #609158; color:white" onclick="location.href='#'">Permissions</button>
+  <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split pt-0" style="background-color: #609158; color:white" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+
+   {% if cost.file_path %}
+                 {% if current_user.download_file == 2 %}
+              <ul class="dropdown-menu">
+      <li><a class="dropdown-item" href="{{ url_for('download_file',name=cost.file_path)}}">Download File</a></li>
+                  </ul>
+              {% endif %}
+      {% endif %}
+
+  </ul>
+
+</div></div></td>
+
+    </tr>
+  {% endfor %}
+  <tr>
+      <th scope="row">Total Cost</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>{{total_wall_cement}}</td>
+
+
+  </tr>
+
+  </tbody>
+  	  </table>
+        {% endif %}
+        {% if ceramic %}
+        <h1 style="color:white">Ceramic Cost</h1>
+      <table class="table table-success table-striped table-hover">
+          <thead>
+
+
+    <tr style="color: #fff">
+      <th scope="col">Description</th>
+      <th scope="col">Total</th>
+        <th scope="col">Date</th>
+        <th scope="col">User Id</th>
+        <th scope="col">Permission</th>
+    </tr>
+  </thead>
+  <tbody>
+
+
+  <tr >
+    {% for cost in ceramic: %}
+      <th scope="row">{{ cost.description|safe}}</th>
+      <td>{{ cost.total}}</td>
+      <td>{{ cost.date}}</td>
+      <td>{{cost.user_id}}</td>
+      <td class="pt-1"><div class="btn-group" style="height:20px">
+<!-- Example split danger button -->
+          <div class="btn-group">
+
+  <button type="button" class="btn btn-success pt-0" style="background-color: #609158; color:white" onclick="location.href='#'">Permissions</button>
+  <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split pt-0" style="background-color: #609158; color:white" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+
+   {% if cost.file_path %}
+                 {% if current_user.download_file == 2 %}
+              <ul class="dropdown-menu">
+      <li><a class="dropdown-item" href="{{ url_for('download_file',name=cost.file_path)}}">Download File</a></li>
+                  </ul>
+              {% endif %}
+      {% endif %}
+
+  </ul>
+
+</div></div></td>
+
+    </tr>
+  {% endfor %}
+  <tr>
+      <th scope="row">Total Cost</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>{{total_ceramic}}</td>
+
+
+  </tr>
+
+  </tbody>
+  	  </table>
+        {% endif %}
+        {% if marble %}
+        <h1 style="color:white">Marble Cost</h1>
+      <table class="table table-success table-striped table-hover">
+          <thead>
+
+
+    <tr style="color: #fff">
+      <th scope="col">Description</th>
+      <th scope="col">Total</th>
+        <th scope="col">Date</th>
+        <th scope="col">User Id</th>
+        <th scope="col">Permission</th>
+    </tr>
+  </thead>
+  <tbody>
+
+
+  <tr >
+    {% for cost in marble: %}
+      <th scope="row">{{ cost.description|safe}}</th>
+      <td>{{ cost.total}}</td>
+      <td>{{ cost.date}}</td>
+      <td>{{cost.user_id}}</td>
+      <td class="pt-1"><div class="btn-group" style="height:20px">
+<!-- Example split danger button -->
+          <div class="btn-group">
+
+  <button type="button" class="btn btn-success pt-0" style="background-color: #609158; color:white" onclick="location.href='#'">Permissions</button>
+  <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split pt-0" style="background-color: #609158; color:white" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+
+   {% if cost.file_path %}
+                {% if current_user.download_file == 2 %}
+              <ul class="dropdown-menu">
+      <li><a class="dropdown-item" href="{{ url_for('download_file',name=cost.file_path)}}">Download File</a></li>
+                  </ul>
+              {% endif %}
+      {% endif %}
+
+  </ul>
+
+</div></div></td>
+
+    </tr>
+  {% endfor %}
+  <tr>
+      <th scope="row">Total Cost</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>{{total_marble}}</td>
+
+
+  </tr>
+
+  </tbody>
+  	  </table>
+        {% endif %}
+          {% if swimming_pool %}
+        <h1 style="color:white">Swimming Pool Cost</h1>
+      <table class="table table-success table-striped table-hover">
+          <thead>
+
+
+    <tr style="color: #fff">
+      <th scope="col">Description</th>
+      <th scope="col">Total</th>
+        <th scope="col">Date</th>
+        <th scope="col">User Id</th>
+        <th scope="col">Permission</th>
+    </tr>
+  </thead>
+  <tbody>
+
+
+  <tr >
+    {% for cost in swimming_pool: %}
+      <th scope="row">{{ cost.description|safe}}</th>
+      <td>{{ cost.total}}</td>
+      <td>{{ cost.date}}</td>
+      <td>{{cost.user_id}}</td>
+      <td class="pt-1"><div class="btn-group" style="height:20px">
+<!-- Example split danger button -->
+          <div class="btn-group">
+
+  <button type="button" class="btn btn-success pt-0" style="background-color: #609158; color:white" onclick="location.href='#'">Permissions</button>
+  <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split pt-0" style="background-color: #609158; color:white" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+
+   {% if cost.file_path %}
+                 {% if current_user.download_file == 2 %}
+              <ul class="dropdown-menu">
+      <li><a class="dropdown-item" href="{{ url_for('download_file',name=cost.file_path)}}">Download File</a></li>
+                  </ul>
+              {% endif %}
+      {% endif %}
+
+  </ul>
+
+</div></div></td>
+
+    </tr>
+  {% endfor %}
+  <tr>
+      <th scope="row">Total Cost</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>{{total_swimming_pool}}</td>
+
+
+  </tr>
+
+  </tbody>
+  	  </table>
+        {% endif %}
+          {% if painting %}
+        <h1 style="color:white">Painting Cost</h1>
+      <table class="table table-success table-striped table-hover">
+          <thead>
+
+
+    <tr style="color: #fff">
+      <th scope="col">Description</th>
+      <th scope="col">Total</th>
+        <th scope="col">Date</th>
+        <th scope="col">User Id</th>
+        <th scope="col">Permission</th>
+    </tr>
+  </thead>
+  <tbody>
+
+
+  <tr >
+    {% for cost in painting: %}
+      <th scope="row">{{ cost.description|safe}}</th>
+      <td>{{ cost.total}}</td>
+      <td>{{ cost.date}}</td>
+      <td>{{cost.user_id}}</td>
+      <td class="pt-1"><div class="btn-group" style="height:20px">
+<!-- Example split danger button -->
+          <div class="btn-group">
+
+  <button type="button" class="btn btn-success pt-0" style="background-color: #609158; color:white" onclick="location.href='#'">Permissions</button>
+  <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split pt-0" style="background-color: #609158; color:white" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+
+   {% if cost.file_path %}
+                {% if current_user.download_file == 2 %}
+              <ul class="dropdown-menu">
+      <li><a class="dropdown-item" href="{{ url_for('download_file',name=cost.file_path)}}">Download File</a></li>
+                  </ul>
+              {% endif %}
+      {% endif %}
+
+  </ul>
+
+</div></div></td>
+
+    </tr>
+  {% endfor %}
+  <tr>
+      <th scope="row">Total Cost</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>{{total_painting}}</td>
+
+
+  </tr>
+
+  </tbody>
+  	  </table>
+        {% endif %}
+                  {% if expenses %}
+        <h1 style="color:white">Expenses Cost</h1>
+      <table class="table table-success table-striped table-hover">
+          <thead>
+
+
+    <tr style="color: #fff">
+      <th scope="col">Description</th>
+      <th scope="col">Total</th>
+        <th scope="col">Date</th>
+        <th scope="col">User Id</th>
+        <th scope="col">Permission</th>
+    </tr>
+  </thead>
+  <tbody>
+
+
+  <tr >
+    {% for cost in expenses: %}
+      <th scope="row">{{ cost.description|safe}}</th>
+      <td>{{ cost.total}}</td>
+      <td>{{ cost.date}}</td>
+      <td>{{cost.user_id}}</td>
+      <td class="pt-1"><div class="btn-group" style="height:20px">
+<!-- Example split danger button -->
+          <div class="btn-group">
+
+  <button type="button" class="btn btn-success pt-0" style="background-color: #609158; color:white" onclick="location.href='#'">Permissions</button>
+  <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split pt-0" style="background-color: #609158; color:white" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+
+   {% if cost.file_path %}
+                 {% if current_user.download_file == 2 %}
+              <ul class="dropdown-menu">
+      <li><a class="dropdown-item" href="{{ url_for('download_file',name=cost.file_path)}}">Download File</a></li>
+                  </ul>
+              {% endif %}
+      {% endif %}
+
+  </ul>
+
+</div></div></td>
+
+    </tr>
+  {% endfor %}
+  <tr>
+      <th scope="row">Total Cost</th>
+      <td></td>
+      <td></td>
+      <td></td>
+      <td>{{total_expenses}}</td>
+
+
+  </tr>
+
+  </tbody>
+  	  </table>
+        {% endif %}
+        <p style="color:white">Total {{ project.project_name }} Cost is {{ total_cost }} </p>
+        <p style="color:white">Percentage of costs to revenues is {{percentage}} %</p>
+        <p style="color:white">Total profit is {{ profit}}</p>
+
+
+
+
+    </div>
+  </div>
+</div>
+
+{% include 'footer.html' %}{% endblock %}

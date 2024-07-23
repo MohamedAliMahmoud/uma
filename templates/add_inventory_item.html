@@ -1,0 +1,39 @@
+
+{% from "bootstrap5/form.html" import render_form %}
+{% block content %}{% include 'header.html' %}
+<header
+  class="masthead"
+  style="background-color: #609158"
+>
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="page-heading">
+            {% if add_inventory_item %}
+            <h2 class="display-8" style="color:white;font-family: Times New Roman, Times, serif">Add Inventory Item</h2>
+            {% endif %}
+            {% if edit_item_name %}
+            <h2 class="display-8" style="color:white;font-family: Times New Roman, Times, serif" >Edit Inventory Item</h2>
+            {% endif %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<body>
+<div class="col-lg-8 col-md-10 mx-auto" style="font-family: Times New Roman, Times, serif">
+  {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      {% for message in messages %}
+      <p class="flash" style="font-family: Times New Roman, Times, serif">{{ message }}</p>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+        <!--Rendering login form here-->
+        {{render_form(form, novalidate=True, button_map={"submit": "success"}) }}
+
+</div>
+
+</body>
+{% include 'footer.html' %}{% endblock %}

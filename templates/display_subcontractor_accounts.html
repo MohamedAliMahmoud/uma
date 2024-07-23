@@ -1,0 +1,199 @@
+{% from "bootstrap5/form.html" import render_form %}
+{% block content %}{% include 'header.html' %}
+<header
+  class="masthead"
+  style="background-color: #609158"
+>
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="page-heading">
+          <h2 class="display-8" style="color:white;font-family: Times New Roman, Times, serif" >Subcontractor Account</h2>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+
+      <p style="color:white">Quotation</p>
+
+	  <table class="table table-success table-striped table-hover">
+          <thead>
+
+
+    <tr style="color: #fff">
+      <th scope="col">Quotation Id</th>
+      <th scope="col">Quotation Name</th>
+      <th scope="col">Quotation Description</th>
+        <th scope="col">Quotation Total</th>
+        <th scope="col">Date</th>
+        <th scope="col">Permissions</th>
+    </tr>
+  </thead>
+  <tbody>
+
+
+  <tr >
+      <th scope="row">{{ project.id}}</th>
+      <td>{{ project.project_name}}</td>
+      <td>{{ project.description|safe}}</td>
+      <td>{{ project.total}}</td>
+      <td>{{ project.date }}</td> <td class="pt-1"><div class="btn-group" style="height:20px">
+<!-- Example split danger button -->
+          <div class="btn-group">
+              {% if current_user.display_project == 2 %}
+  <button type="button" style="background-color: #609158; color:white" class="btn btn pt-0" onclick="location.href='{{url_for('display_project', project_id=project.id)}}'">Display</button>
+              {% endif %}
+              {% if current_user.display_project == 1 %}
+                <button type="button" style="background-color: #609158; color:white" class="btn btn pt-0" onclick="location.href='#">Permission</button>
+              {% endif %}
+  <button type="button" style="background-color: #609158" class="btn btn-success dropdown-toggle dropdown-toggle-split pt-0" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+               {% if current_user.edit_project == 2 or current_user.add_project_details == 2 or current_user.add_subcontractor_opening_account == 2 or current_user.add_subcontractor_cash_out == 2 or current_user.display_subcontractor_account == 2 or current_user.display_project_cost == 2 or current_user.upload_file == 2 or current_user.download_file == 2 or current_user.delete_file == 2 %}
+  <ul class="dropdown-menu">
+      {% if current_user.edit_project == 2 %}
+    <li><a class="dropdown-item" href="{{url_for('edit_project', project_id=project.id)}}">Edit Project</a></li>
+      {% endif %}
+      {% if current_user.add_project_details == 2 %}
+       <li><a class="dropdown-item" href="{{url_for('add_project_details', project_id=project.id)}}">Add Project Details</a></li>
+      {% endif %}
+      {% if  current_user.add_subcontractor_opening_account == 2  %}
+      <li><a class="dropdown-item" href="{{url_for('add_subcontractor_opening_balance', project_id=project.id)}}"> Add Subcontractors Opening Balance</a></li>
+      {% endif %}
+      {% if current_user.add_subcontractor_cash_out == 2 %}
+       <li><a class="dropdown-item" href="{{url_for('insert_subcontractor_cash_out', project_id=project.id)}}"> Add Subcontractors Cash Out</a></li>
+      {% endif %}
+      {% if current_user.display_subcontractor_account == 2 %}
+      <li><a class="dropdown-item" href="{{url_for('display_subcontractor_accounts', project_id=project.id)}}"> Display Subcontractor Account</a></li>
+      {% endif %}
+      {% if current_user.display_project_cost == 2 %}
+      <li><a class="dropdown-item" href="{{url_for('display_project_cost', project_id=project.id)}}"> Display Project Cost</a></li>
+      {% endif %}
+      {% if project.file_path %}
+      {% if current_user.download_file == 2 %}
+      <li><a class="dropdown-item" href="{{ url_for('download_file',name=project.file_path)}}">Download File</a></li>
+      {% endif %}
+      {% if current_user.delete_file== 2 %}
+       <li><a class="dropdown-item" href="{{ url_for('delete_upload_file', name='Project', id=project.id)}}">Delete File</a></li>
+      {% endif %}
+      {% else %}
+      {% if current_user.upload_file == 2 %}
+      <li><a class="dropdown-item" href="{{url_for('upload_file', name='Project', id=project.id)}}"> Upload File</a></li>
+      {% endif %}
+      {% endif %}
+
+  </ul>
+              {% endif %}
+
+</div></div></td>
+
+    </tr>
+
+  </tbody>
+  	  </table>
+<div class="container mx-auto">
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      {% for message in messages %}
+      <p class="flash">{{ message }}</p>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+<div style="color:white">
+        <!--Rendering login form here-->
+        {{render_form(form, novalidate=True, button_map={"submit": "success"}) }}
+        {{ ckeditor.load() }}
+        {{ ckeditor.config(name='description') }}
+  </div>
+</div>
+        {% if subcontractors %}
+        <p style="color:white">Subcontractor Account</p>
+      <table class="table table-success table-striped table-hover">
+          <thead>
+
+
+    <tr style="color: #fff">
+      <th scope="col">Description</th>
+      <th scope="col">Opening Balance</th>
+        <th scope="col">Cash Out</th>
+        <th scope="col">Date</th>
+        <th scope="col">Permissions</th>
+    </tr>
+  </thead>
+  <tbody>
+
+
+  <tr >
+    {% for subcontractor in subcontractors %}
+      <th scope="row">{{ subcontractor.description|safe}}</th>
+      <th scope="row">{{ subcontractor.opening_balance}}</th>
+      <td>{{ subcontractor.cash_out}}</td>
+      <td>{{ subcontractor.date}}</td>
+
+
+      <td class="pt-1"><div class="btn-group" style="height:20px">
+<!-- Example split danger button -->
+          <div class="btn-group">
+
+  <button type="button" class="btn btn-success pt-0" style="background-color: #609158; color:white" onclick="location.href='#'">Permissions</button>
+  <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split pt-0" style="background-color: #609158; color:white" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+   {% if current_user.edit_subcontractor_account == 2 or current_user.delete_subcontractor_account == 2 or current_user.download_file == 2 or current_user.delete_file == 2 or current_user.upload_file == 2 %}
+  <ul class="dropdown-menu">
+    {% if current_user.edit_subcontractor_account == 2%}
+    <li><a class="dropdown-item" href="{{url_for('edit_subcontractor_item', subcontractor_id=subcontractor.id)}}">Editing</a></li>
+    {% endif %}
+    {% if current_user.delete_subcontractor_account == 2%}
+       <li><a class="dropdown-item" href="{{url_for('delete_subcontractor_data', subcontractor_id=subcontractor.id)}}">Delete</a></li>
+    {% endif %}
+      {% if subcontractor.file_path %}
+    {% if current_user.download_file == 2 %}
+      <li><a class="dropdown-item" href="{{ url_for('download_file', name=subcontractor.file_path)}}">Download File</a></li>
+    {% endif %}
+    {% if current_user.delete_file == 2 %}
+    <li><a class="dropdown-item" href="{{ url_for('delete_upload_file', name='SubContractor', id=subcontractor.id)}}">Delete File</a></li>
+    {% endif %}
+      {% else %}
+    {% if current_user.upload_file %}
+      <li><a class="dropdown-item" href="{{url_for('upload_file', name='SubContractor', id=subcontractor.id)}}"> Upload File</a></li>
+      {% endif %}
+    {% endif %}
+  </ul>
+    {% endif %}
+
+</div></div></td>
+
+    </tr>
+  {% endfor %}
+
+  <tr >
+    {% if balance %}
+      <th scope="row">Subcontractor Balance is</th>
+      <th scope="row"></th>
+      <td></td>
+      <td></td>
+      <td>{{balance}}</td>
+      {% endif %}
+  </tr>
+
+  </tbody>
+  	  </table>
+        {% endif %}
+
+
+
+
+
+
+    </div>
+  </div>
+</div>
+
+{% include 'footer.html' %}{% endblock %}

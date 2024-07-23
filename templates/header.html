@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>UMA</title>
+    {% block styles %}
+    <!-- Load Bootstrap-Flask CSS here -->
+    {{ bootstrap.load_css() }}
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ url_for('static', filename='assets/favicon.ico') }}"
+    />
+    <!-- Font Awesome icons (free version)-->
+    <script
+      src="https://use.fontawesome.com/releases/v6.3.0/js/all.js"
+      crossorigin="anonymous"
+    ></script>
+    <!-- Google fonts-->
+    <link
+      href="https://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic"
+      rel="stylesheet"
+      type="text/css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400..700&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800"
+      rel="stylesheet"
+      type="text/css"
+    />
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+      <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Playfair+Display:ital@1&display=swap" rel="stylesheet">
+    <!-- Core theme CSS (includes Bootstrap)-->
+    <link
+      href="{{ url_for('static', filename='css/styles.css') }}"
+      rel="stylesheet"
+    />
+    {% endblock %}
+  </head>
+  <body  style="background-color: #5F7B5B ">
+    <!-- Navigation-->
+    <nav class="navbar navbar-expand-lg navbar-light" id="mainNav">
+      <div class="container px-4 px-lg-5">
+        <a class="navbar-brand" style="font-family:Static;font-size:200%;" href="/">UMA</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarResponsive"
+          aria-controls="navbarResponsive"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          Menu
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+          <ul class="navbar-nav ms-auto py-4 py-lg-0">
+            {% if not current_user.is_authenticated: %}
+            <li class="nav-item">
+              <a
+                class="nav-link px-lg-3 py-3 py-lg-4" style="font-family: Times New Roman, Times, serif"
+                href="{{ url_for('get_all_posts') }}"
+                >Home</a
+              >
+            </li>
+            <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle px-lg-3 py-3 py-lg-4" href="#" role="button" style="font-family: Times New Roman, Times, serif" data-bs-toggle="dropdown" aria-expanded="false">
+            Services
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{{ url_for('interior_finishing') }}" style="font-family: Times New Roman, Times, serif" >Interior Finishing</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{{ url_for('exterior_finishing') }}" style="font-family: Times New Roman, Times, serif" >Exterior Finishing</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="{{ url_for('swimming_pool_construction') }}" style="font-family: Times New Roman, Times, serif" >Swimming Pool Construction</a></li>
+          </ul>
+        </li>
+            <li class="nav-item">
+              <a
+                class="nav-link px-lg-3 py-3 py-lg-4"
+                href="{{ url_for('home_decor') }}" style="font-family: Times New Roman, Times, serif"
+                >Home Decor Ideas</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link px-lg-3 py-3 py-lg-4"
+                href="{{ url_for('about') }}" style="font-family: Times New Roman, Times, serif"
+                >About</a
+              >
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link px-lg-3 py-3 py-lg-4" style="font-family: Times New Roman, Times, serif"
+                href="{{ url_for('contact') }}"
+                >Contact</a
+              >
+            </li>
+            <li class="nav-item" style="font-family: Times New Roman, Times, serif">
+              <a
+                class="nav-link px-lg-3 py-3 py-lg-4" style="font-family: Times New Roman, Times, serif"
+                href="{{ url_for('display_works_tracking') }}"
+                >Works Tracking</a
+              >
+            </li>
+            {% endif %}
+             <!-- Only show Login/Register if user is logged out. Otherwise show "Log Out" -->
+            {% if not current_user.is_authenticated: %}
+            <li class="nav-item">
+              <a
+                class="nav-link px-lg-3 py-3 py-lg-4" style="font-family: Times New Roman, Times, serif"
+                href="{{ url_for('login') }}"
+                >Login</a
+              >
+            </li>
+            {% endif %}
+            {% if current_user.is_authenticated: %}
+              {% if current_user.id == 1 %}
+                <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle px-lg-3 py-3 py-lg-4" style="font-family: Times New Roman, Times, serif" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Users
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="{{ url_for('all_users') }}" style="font-family: Times New Roman, Times, serif" >Display All Users</a></li>
+
+          </ul>
+        </li>
+              {% endif %}
+              {% if current_user.cash == 2 %}
+             <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle px-lg-3 py-3 py-lg-4" style="font-family: Times New Roman, Times, serif"  href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Cash
+          </a>
+                 {% if current_user.add_cash == 2 or  current_user.display_cash_account == 2 %}
+          <ul class="dropdown-menu">
+              {% if current_user.add_cash == 2 %}
+            <li><a class="dropdown-item" href="{{ url_for('cash_in') }}" style="font-family: Times New Roman, Times, serif" >Add Cash In</a></li>
+              {% endif %}
+              {% if current_user.display_cash_account == 2 %}
+            <li><a class="dropdown-item" href="{{ url_for('display_cash') }}" style="font-family: Times New Roman, Times, serif" >Display Cash Account</a></li>
+              {% endif %}
+              </ul>
+              {% endif %}
+                 {% endif %}
+
+
+        </li>
+              {% if current_user.projects == 2 %}
+            <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle px-lg-3 py-3 py-lg-4" href="#" style="font-family: Times New Roman, Times, serif" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Projects
+          </a>
+                {% if current_user.add_project == 2 or current_user.display_all_projects == 2 %}
+          <ul class="dropdown-menu">
+              {% if current_user.add_project == 2 %}
+            <li><a class="dropdown-item" href="{{ url_for('add_project') }} " style="font-family: Times New Roman, Times, serif" >Add Project</a></li>
+              {% endif %}
+              {% if current_user.display_all_projects == 2 %}
+            <li><a class="dropdown-item" href="{{ url_for('all_projects') }}" style="font-family: Times New Roman, Times, serif" >Display Projects</a></li>
+              {% endif %}
+          </ul>
+                {% endif %}
+        </li>
+              {% endif %}
+              {% if current_user.custody == 2 %}
+             <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle px-lg-3 py-3 py-lg-4" style="font-family: Times New Roman, Times, serif" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Custody
+          </a>
+                {% if current_user.display_my_custody == 2 or current_user.display_all_custodes == 2 or current_user.add_custody_settlement == 2 %}
+          <ul class="dropdown-menu">
+              {% if current_user.display_my_custody == 2 %}
+            <li><a class="dropdown-item" href="{{ url_for('display_user_custodes',custody_id=current_user.id) }} " style="font-family: Times New Roman, Times, serif" >Display My Custody</a></li>
+              {% endif %}
+              {% if current_user.display_all_custodes == 2 %}
+            <li><a class="dropdown-item" href="{{ url_for('all_custodes') }}" style="font-family: Times New Roman, Times, serif" >Display All Custodes</a></li>
+              {% endif %}
+            {% if current_user.add_custody_settlement == 2 %}
+            <li><a class="dropdown-item" href="{{ url_for('add_custody_settlement',user_id=current_user.id) }}" style="font-family: Times New Roman, Times, serif" >Custody Settlement</a></li>
+              {% endif %}
+          </ul>
+                 {% endif %}
+             </li>
+              {% endif %}
+              {% if current_user.payroll == 2 %}
+                <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle px-lg-3 py-3 py-lg-4" style="font-family: Times New Roman, Times, serif" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Payroll
+          </a>
+            {% if current_user.add_employee == 2 or current_user.display_all_employees == 2 or current_user.salary_cash_out == 2 %}
+               <ul class="dropdown-menu">
+                   {% if current_user.add_employee == 2 %}
+            <li><a class="dropdown-item" href="{{ url_for('add_employee_details') }}" style="font-family: Times New Roman, Times, serif" >Add Employee</a></li>
+                   {% endif %}
+                   {% if current_user.display_all_employees == 2 %}
+            <li><a class="dropdown-item" href="{{ url_for('display_all_employees') }}" style="font-family: Times New Roman, Times, serif" >Display All Employees</a></li>
+                   {% endif %}
+               {% if current_user.salary_cash_out == 2 %}
+            <li><a class="dropdown-item" href="{{ url_for('salary_cash_out') }}" style="font-family: Times New Roman, Times, serif" >Salary Cash Out</a></li>
+                   {% endif %}
+          </ul>
+                    {% endif %}
+        </li>
+              {% endif %}
+              {% if current_user.inventory == 2 %}
+             <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle px-lg-3 py-3 py-lg-4" style="font-family: Times New Roman, Times, serif" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Inventory
+          </a>
+                 {% if current_user.add_item == 2  or current_user.display_all_items == 2 %}
+          <ul class="dropdown-menu">
+              {% if current_user.add_item == 2 %}
+            <li><a class="dropdown-item" href="{{ url_for('add_inventory_item') }}" style="font-family: Times New Roman, Times, serif" >Add Item</a></li>
+              {% endif %}
+              {% if current_user.display_all_items == 2 %}
+            <li><a class="dropdown-item" href="{{ url_for('display_all_items') }}" style="font-family: Times New Roman, Times, serif" >Display All Items</a></li>
+              {% endif %}
+          </ul>
+                 {% endif %}
+        </li>
+              {% endif %}
+              {% if current_user.expenses == 2 %}
+                  <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle px-lg-3 py-3 py-lg-4" style="font-family: Times New Roman, Times, serif" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Expenses
+          </a>
+            {% if current_user.add_expense == 2 or current_user.display_all_expenses == 2 or current_user.expense_cash_out == 2 %}
+          <ul class="dropdown-menu">
+              {% if current_user.add_expense == 2 %}
+            <li><a class="dropdown-item" href="{{ url_for('add_expense') }}" style="font-family: Times New Roman, Times, serif" >Add Adm Expense</a></li>
+              {% endif %}
+              {% if current_user.display_all_expenses == 2 %}
+            <li><a class="dropdown-item" href="{{ url_for('display_all_expenses') }}" style="font-family: Times New Roman, Times, serif" >Display All Adm Expenses</a></li>
+              {% endif %}
+               {% if current_user.expense_cash_out == 2 %}
+              <li><a class="dropdown-item" href="{{ url_for('expense_cash_out') }}" style="font-family: Times New Roman, Times, serif" >Adm Expense Cash Out</a></li>
+              {% endif %}
+              {% if current_user.operating_expense_cash_out == 2 %}
+               <li><a class="dropdown-item" href="{{ url_for('add_operation_expense') }}" style="font-family: Times New Roman, Times, serif" >Op Expense Cash Out</a></li>
+              {% endif %}
+              {% if current_user.display_all_operating_expenses == 2 %}
+              <li><a class="dropdown-item" href="{{ url_for('display_all_operation_expenses') }}" style="font-family: Times New Roman, Times, serif" >Display All Op Expenses</a></li>
+              {% endif %}
+          </ul>
+                      {% endif %}
+
+        </li>
+              {% endif %}
+              {% if current_user.notifications == 2 %}
+                  <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle px-lg-3 py-3 py-lg-4" style="font-family: Times New Roman, Times, serif" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Notifications
+          </a>
+          {% if current_user.add_financial_requirement == 2 or current_user.display_all_financial_requirements == 2 or current_user.add_subcontractor_requirement == 2 or current_user.display_subcontractor_requirements == 2 %}
+          <ul class="dropdown-menu">
+              {% if current_user.add_financial_requirement == 2 %}
+            <li><a class="dropdown-item" href="{{ url_for('add_financial_requirement') }}" style="font-family: Times New Roman, Times, serif" >Add Financial Requirements</a></li>
+              {% endif %}
+              {% if current_user.display_all_financial_requirements == 2 %}
+            <li><a class="dropdown-item" href="{{ url_for('display_all_financial_requirements') }}" style="font-family: Times New Roman, Times, serif" >Display All Financial Requirements</a></li>
+              {% endif %}
+              {% if current_user.add_subcontractor_requirement == 2 %}
+               <li><a class="dropdown-item" href="{{ url_for('add_subcontractor_requirement') }}" style="font-family: Times New Roman, Times, serif" >Add Subcontractor Requirements</a></li>
+              {% endif %}
+              {% if current_user.display_subcontractor_requirements == 2 %}
+              <li><a class="dropdown-item" href="{{ url_for('display_all_subcontractors_requirements') }}" style="font-family: Times New Roman, Times, serif" >Display Subcontractor Requirements</a></li>
+              {% endif %}
+              {% if current_user.add_purchase_requirement == 2 %}
+              <li><a class="dropdown-item" href="{{ url_for('add_purchase_requirement') }}" style="font-family: Times New Roman, Times, serif" >Add Purchase Requirement</a></li>
+              {% endif %}
+              {% if current_user.display_purchase_requirements == 2 %}
+              <li><a class="dropdown-item" href="{{ url_for('display_all_purchase_requirements') }}" style="font-family: Times New Roman, Times, serif" >Display Purchase Requirements</a></li>
+              {% endif %}
+
+          </ul>
+          {% endif %}
+        </li>
+              {% endif %}
+
+
+
+            {% endif %}
+
+
+
+            {% if current_user.id == 1 %}
+            <li class="nav-item">
+              <a
+                class="nav-link px-lg-3 py-3 py-lg-4"
+                href="{{ url_for('register') }}" style="font-family: Times New Roman, Times, serif"
+                >Register</a
+              >
+            </li>
+            {% endif %}
+            {% if current_user.is_authenticated: %}
+            <li class="nav-item">
+              <a
+                class="nav-link px-lg-3 py-3 py-lg-4" style="font-family: Times New Roman, Times, serif"
+                href="{{ url_for('logout') }}"
+                >Log Out</a
+              >
+            </li>
+            {% endif %}
+            {% if current_user.is_authenticated: %}
+              <li class="nav-item">
+              <a
+                class="nav-link px-lg-3 py-3 py-lg-4" style="font-family: Times New Roman, Times, serif"
+                >Hi {{ current_user.name}}</a
+              >
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </body>
+</html>

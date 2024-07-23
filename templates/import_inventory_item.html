@@ -1,0 +1,126 @@
+{% from "bootstrap5/form.html" import render_form %}
+{% block content %}{% include 'header.html' %}
+<header
+  class="masthead"
+  style="background-color: #609158"
+>
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="page-heading">
+            {% if import_item %}
+
+            <h2 class="display-8" style="color:white;font-family: Times New Roman, Times, serif">Import Movement</h2>
+            {% endif %}
+            {% if opening_balance %}
+            <h2 class="display-8" style="color:white;font-family: Times New Roman, Times, serif" >Add Opening Balance</h2>
+            {% endif %}
+            {% if edit_export %}
+
+            <h2 class="display-8" style="color:white;font-family: Times New Roman, Times, serif" >Export Movement</h2>
+            {% endif %}
+            {% if edit_import %}
+            <h2 class="display-8" style="color:white;font-family: Times New Roman, Times, serif" >Edit Import Movement</h2>
+            {% endif %}
+            {% if export %}
+
+            <h2 class="display-8" style="color:white;font-family: Times New Roman, Times, serif" >Export Movement</h2>
+            {% endif %}
+
+
+
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<body>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+
+
+      <table class="table table-success table-striped table-hover">
+          <thead>
+
+
+    <tr style="color: #fff">
+      <th scope="col">Item Id</th>
+      <th scope="col">Item Name</th>
+      <th scope="col">Unit Price Avg</th>
+        <th scope="col">Qty In</th>
+        <th scope="col">Total In</th>
+        <th scope="col">Qty Out</th>
+        <th scope="col">Total Out</th>
+        <th scope="col">Qty Balance</th>
+        <th scope="col">Total Balance</th>
+        <th scope="col">Permissions</th>
+    </tr>
+  </thead>
+  <tbody>
+
+  <tr >
+      <th scope="row">{{ item.id}}</th>
+      <td>{{ item.name}}</td>
+      <td class="ps-5 pe-5">{{ item.unit_price_average}}</td>
+      <td  style="color:green">{{ item.quantity_in}}</td>
+      <td style="color:green">{{ item.total_in}}</td>
+      <td style="color:red">{{ item.quantity_out}}</td>
+      <td style="color:red">{{ item.total_out}}</td>
+      <td>{{ item.quantity_balance}}</td>
+      <td>{{ item.total_balance}}</td>
+      <td class="pt-1"><div class="btn-group" style="height:20px">
+<!-- Example split danger button -->
+          <div class="btn-group">
+              {% if current_user.display_item_movements == 2 %}
+  <button type="button" class="btn btn-success pt-0" onclick="location.href='{{ url_for('display_item_movements', inventory_item_id=item.id) }}'">Display</button>
+              {% else %}
+              <button type="button" class="btn btn-success pt-0" onclick="location.href='#'">Permissions</button>
+              {% endif %}
+  <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split pt-0" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+  {% if current_user.edit_item == 2 or current_user.import_item == 2 or current_user.export_item == 2 %}
+  <ul class="dropdown-menu">
+      {% if current_user.edit_item == 2 %}
+    <li><a class="dropdown-item" href="{{ url_for('edit_item_name', item_id=item.id) }}">Edit Item</a></li>
+      {% endif %}
+      {% if current_user.import_item == 2 %}
+      <li><a class="dropdown-item" href="{{ url_for('add_item_opening_balance', item_id=item.id) }}">Add Opening Balance</a></li>
+       <li><a class="dropdown-item" href="{{ url_for('import_inventory_item', inventory_item_id=item.id) }}">Import Item</a></li>
+      {% endif %}
+      {% if current_user.export_item == 2 %}
+      <li><a class="dropdown-item" href="{{ url_for('export_inventory_item', inventory_item_id=item.id) }}">Export Item</a></li>
+       {% endif %}
+  </ul>
+{% endif %}
+</div></div></td>
+
+    </tr>
+
+  </tbody>
+  	  </table>
+    </div>
+  </div>
+</div>
+
+
+      <div class="col-lg-8 col-md-10 mx-auto">
+  {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      {% for message in messages %}
+      <p class="flash">{{ message }}</p>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+        <!--Rendering login form here-->
+        {{render_form(form, novalidate=True, button_map={"submit": "success"}) }}
+    {{ ckeditor.load() }}
+        {{ ckeditor.config(name='description') }}
+
+</div>
+
+</body>
+{% include 'footer.html' %}{% endblock %}

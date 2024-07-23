@@ -1,0 +1,165 @@
+{% block content %}{% include 'header.html' %}
+<header
+  class="masthead"
+  style="background-color: #609158"
+>
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="page-heading">
+            {% if search %}
+            <h2 class="display-8" style="color:white;font-family: Times New Roman, Times, serif">Display Operating Expenses Results</h2>
+            {% else %}
+          <h2 class="display-8" style="color:white;font-family: Times New Roman, Times, serif">Display Operating Expenses Details</h2>
+            {% endif %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+
+
+         {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      {% for message in messages %}
+      <p class="flash" style="color:white">{{ message }}</p>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+           <form class="form-inline" action="{{url_for('search_operation_expenses')}}" method="post">
+ <div class="col-md-3 col-lg-4 col-xl-5 py-2 container">
+  <input class=" form-control" placeholder="Search Input" name="input_name">
+      </div>
+</form>
+        {% if search %}
+            <p style="color:white">Display Operating Expenses Results</p>
+            {% else %}
+          <p style="color:white">Display Operating Expenses Details</p>
+            {% endif %}
+        {% if not search %}
+
+        <div style="color:white">{{ pagination.info }}</div>
+        {% endif %}
+
+      <table class="table table-success table-striped table-hover">
+          <thead>
+
+
+    <tr style="color: #fff">
+        <th scope="col">Id</th>
+      <th scope="col">description</th>
+      <th scope="col">total</th>
+        <th scope="col">Date</th>
+        <th scope="col">Permissions</th>
+    </tr>
+  </thead>
+  <tbody>
+
+
+  <tr >
+      {% if search %}
+      {% for operation_expense in operation_expenses %}
+      <th scope="row">{{ operation_expense.id}}</th>
+      <td>{{ operation_expense.description|safe}}</td>
+      <td>{{ operation_expense.total}}</td>
+      <td>{{ operation_expense.date}}</td>
+      <td class="pt-1"><div class="btn-group" style="height:20px">
+<!-- Example split danger button -->
+          <div class="btn-group">
+
+  <button type="button" class="btn btn-success pt-0" onclick="location.href='#'">Permissions</button>
+  <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split pt-0" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+
+{% if current_user.edit_operating_expense == 2 or current_user.delete_operating_expense == 2 or operation_expense.file_path or current_user.upload_file == 2 %}
+  <ul class="dropdown-menu">
+      {% if current_user.edit_operating_expense == 2 %}
+       <li><a class="dropdown-item" href="{{ url_for('edit_operation_expense', operation_expense_id=operation_expense.id)}}">Edit</a></li>
+      {% endif %}
+      {% if current_user.delete_operating_expense == 2 %}
+
+ <li><a class="dropdown-item" href="{{ url_for('delete_operation_expense', operation_expense_id=operation_expense.id)}}">Delete</a></li>
+      {% endif %}
+       {% if operation_expense.file_path %}
+      {% if current_user.download_file == 2 %}
+       <li><a class="dropdown-item" href="{{ url_for('download_file', name=operation_expense.file_path)}}">Download File</a></li>
+      {% endif %}
+      {% if current_user.delete_file == 2 %}
+      <li><a class="dropdown-item" href="{{ url_for('delete_upload_file', name='OperationExpense',id=operation_expense.id )}}">Delete File</a></li>
+      {% endif %}
+      {% else %}
+      {% if current_user.upload_file == 2 %}
+      <li><a class="dropdown-item" href="{{ url_for('upload_file', name='OperationExpense',id=operation_expense.id  )}}">Upload File</a></li>
+      {% endif %}
+      {% endif %}
+  </ul>
+{% endif %}
+
+
+</div></div></td>
+    </tr>
+  {% endfor %}
+  {% else %}
+    {% for operation_expense in operation_expenses %}
+
+      <th scope="row">{{ loop.index + pagination.skip}}</th>
+  <td>{{ operation_expense.description|safe}}</td>
+      <td>{{ operation_expense.total}}</td>
+      <td>{{ operation_expense.date}}</td>
+      <td class="pt-1"><div class="btn-group" style="height:20px">
+<!-- Example split danger button -->
+          <div class="btn-group">
+
+  <button type="button" class="btn btn-success pt-0" onclick="location.href='#'">Permissions</button>
+  <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split pt-0" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+{% if current_user.edit_operating_expense == 2 or current_user.delete_operating_expense == 2 or operation_expense.file_path or current_user.upload_file == 2 %}
+  <ul class="dropdown-menu">
+      {% if current_user.edit_operating_expense == 2 %}
+       <li><a class="dropdown-item" href="{{ url_for('edit_operation_expense', operation_expense_id=operation_expense.id)}}">Edit</a></li>
+      {% endif %}
+      {% if current_user.delete_operating_expense == 2 %}
+
+ <li><a class="dropdown-item" href="{{ url_for('delete_operation_expense', operation_expense_id=operation_expense.id)}}">Delete</a></li>
+      {% endif %}
+       {% if operation_expense.file_path %}
+      {% if current_user.download_file == 2 %}
+       <li><a class="dropdown-item" href="{{ url_for('download_file', name=operation_expense.file_path)}}">Download File</a></li>
+      {% endif %}
+      {% if current_user.delete_file == 2 %}
+      <li><a class="dropdown-item" href="{{ url_for('delete_upload_file', name='OperationExpense',id=operation_expense.id )}}">Delete File</a></li>
+      {% endif %}
+      {% else %}
+      {% if current_user.upload_file == 2 %}
+      <li><a class="dropdown-item" href="{{ url_for('upload_file', name='OperationExpense',id=operation_expense.id  )}}">Upload File</a></li>
+      {% endif %}
+      {% endif %}
+  </ul>
+{% endif %}
+
+</div></div></td>
+    </tr>
+  {% endfor %}
+  {% endif %}
+
+
+  </tbody>
+  	  </table>
+        {% if not search %}
+        {{ pagination.links }}
+        {% endif %}
+
+
+
+    </div>
+  </div>
+</div>
+
+{% include 'footer.html' %}{% endblock %}

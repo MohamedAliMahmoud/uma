@@ -1,0 +1,116 @@
+{% block content %}{% include 'header.html' %}
+<header
+  class="masthead"
+  style="background-color: #609158"
+>
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="page-heading">
+            {% if search %}
+            <h2 class="display-8" style="color:white;font-family: Times New Roman, Times, serif">All Inventory Items Results</h2>
+            {% else %}
+          <h2 class="display-8" style="color:white;font-family: Times New Roman, Times, serif">All Inventory Items</h2>
+            {% endif %}
+
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+ <div class="col-lg-8 col-md-10 mx-auto">
+  {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      {% for message in messages %}
+      <p class="flash">{{ message }}</p>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+        <!--Rendering login form here-->
+</div>
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+      <form class="form-inline" action="{{url_for('search_item_name')}}" method="post">
+ <div class="col-md-3 col-lg-4 col-xl-5 py-2 container">
+  <input class=" form-control" placeholder="Search Input" name="input_name">
+      </div>
+</form>
+       {% if search %}
+            <p style="color:white">All Inventory Items Results</p>
+            {% else %}
+          <p style="color:white">All Inventory Items</p>
+            {% endif %}
+
+	  <table class="table table-success table-striped table-hover">
+          <thead>
+
+
+    <tr style="color: #fff">
+      <th scope="col">Item Id</th>
+      <th scope="col">Item Name</th>
+      <th scope="col">Unit Price Avg</th>
+        <th scope="col">Qty In</th>
+        <th scope="col">Total In</th>
+        <th scope="col">Qty Out</th>
+        <th scope="col">Total Out</th>
+        <th scope="col">Qty Balance</th>
+        <th scope="col">Total Balance</th>
+        <th scope="col">Permissions</th>
+    </tr>
+  </thead>
+  <tbody>
+
+  {% for item in items %}
+  <tr >
+      <th scope="row">{{ item.id}}</th>
+      <td>{{ item.name}}</td>
+      <td class="ps-5 pe-5">{{ item.unit_price_average}}</td>
+      <td  style="color:green">{{ item.quantity_in}}</td>
+      <td style="color:green">{{ item.total_in}}</td>
+      <td style="color:red">{{ item.quantity_out}}</td>
+      <td style="color:red">{{ item.total_out}}</td>
+      <td>{{ item.quantity_balance}}</td>
+      <td>{{ item.total_balance}}</td>
+      <td class="pt-1"><div class="btn-group" style="height:20px">
+<!-- Example split danger button -->
+          <div class="btn-group">
+              {% if current_user.display_item_movements == 2 %}
+  <button type="button" class="btn btn-success pt-0" onclick="location.href='{{ url_for('display_item_movements', inventory_item_id=item.id) }}'">Display</button>
+              {% else %}
+              <button type="button" class="btn btn-success pt-0" onclick="location.href='#'">Permissions</button>
+              {% endif %}
+  <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split pt-0" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+  {% if current_user.edit_item == 2 or current_user.import_item == 2 or current_user.export_item == 2 %}
+  <ul class="dropdown-menu">
+      {% if current_user.edit_item == 2 %}
+    <li><a class="dropdown-item" href="{{ url_for('edit_item_name', item_id=item.id) }}">Edit Item</a></li>
+      {% endif %}
+      {% if current_user.import_item == 2 %}
+      <li><a class="dropdown-item" href="{{ url_for('add_item_opening_balance', item_id=item.id) }}">Add Opening Balance</a></li>
+       <li><a class="dropdown-item" href="{{ url_for('import_inventory_item', inventory_item_id=item.id) }}">Import Item</a></li>
+      {% endif %}
+      {% if current_user.export_item == 2 %}
+      <li><a class="dropdown-item" href="{{ url_for('export_inventory_item', inventory_item_id=item.id) }}">Export Item</a></li>
+       {% endif %}
+  </ul>
+{% endif %}
+</div></div></td>
+
+    </tr>
+  {% endfor %}
+  </tbody>
+  	  </table>
+        {% if current_user.add_item == 2 %}
+        <p><a style="color:white" href="{{ url_for('add_inventory_item') }}">Add Item</a></p>
+        {% endif %}
+
+    </div>
+  </div>
+</div>
+
+{% include 'footer.html' %}{% endblock %}

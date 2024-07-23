@@ -1,0 +1,158 @@
+{% from "bootstrap5/form.html" import render_form %}
+{% block content %}{% include 'header.html' %}
+<header
+  class="masthead"
+  style="background-color: #609158"
+>
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="page-heading">
+            {% if edit %}
+            <h2 class="display-8" style="color:white;font-family: Times New Roman, Times, serif">Edit Purchase Requirements Items</h2>
+            {% endif %}
+            {% if add %}
+            <h2 class="display-8" style="color:white;font-family: Times New Roman, Times, serif">Add Purchase Requirements Items</h2>
+            {% endif %}
+            {% if display %}
+            <h2 class="display-8" style="color:white;font-family: Times New Roman, Times, serif">Display Purchase Requirements Items</h2>
+            {% endif %}
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+
+
+          <p style="color:white">Purchase Requirement</p>
+
+
+	  <table class="table table-success table-striped table-hover">
+          <thead>
+
+
+    <tr style="color: #fff">
+     <th scope="col">Id</th>
+        <th scope="col"> Project Id</th>
+      <th scope="col">Project Name</th>
+        <th scope="col">Status</th>
+        <th scope="col">date</th>
+        <th scope="col">Permissions</th>
+    </tr>
+  </thead>
+  <tbody>
+
+  <tr >
+      <th scope="row">{{ purchase_requirement.id}}</th>
+       <td>{{ purchase_requirement.project_id}}</td>
+       <td>{{ purchase_requirement.project_name}}</td>
+      <td>{{ purchase_requirement.status}}</td>
+      <td>{{ purchase_requirement.date}}</td>
+      <td class="pt-1"><div class="btn-group" style="height:20px">
+<!-- Example split danger button -->
+          <div class="btn-group">
+
+  <button type="button" class="btn btn-success pt-0" onclick="location.href='#'">Permissions</button>
+  <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split pt-0" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+
+  <ul class="dropdown-menu">
+ <li><a class="dropdown-item" href="{{ url_for('edit_purchase_requirement', purchase_requirement_id=purchase_requirement.id)}}">Edit</a></li>
+       <li><a class="dropdown-item" href="{{ url_for('delete_purchase_requirement', purchase_requirement_id=purchase_requirement.id)}}">Delete</a></li>
+       <li><a class="dropdown-item" href="{{ url_for('add_purchase_requirement_item', purchase_requirement_id=purchase_requirement.id)}}">Add Item</a></li>
+
+  </ul>
+</div></div></td>
+    </tr>
+  </tbody>
+  	  </table>
+    </div>
+  </div></div>
+ <div class="col-lg-8 col-md-10 mx-auto">
+  {% with messages = get_flashed_messages() %}
+      {% if messages %}
+      {% for message in messages %}
+      <p class="flash" style="color:white">{{ message }}</p>
+      {% endfor %}
+      {% endif %}
+      {% endwith %}
+        <!--Rendering login form here-->
+</div>
+
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+
+
+          <p style="color:white">Purchase Requirement Items</p>
+
+
+	  <table class="table table-success table-striped table-hover">
+          <thead>
+
+
+    <tr style="color: #fff">
+        <th scope="col"> Item Name</th>
+        <th scope="col"> Status</th>
+      <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col">Permissions</th>
+    </tr>
+  </thead>
+  <tbody>
+
+  <tr >
+      {% for purchase_requirement_item in purchase_requirement.purchase_requirement_items %}
+      <th scope="row">{{purchase_requirement_item.name }}</th>
+      <th scope="row">{{purchase_requirement_item.status }}</th>
+      <td></td>
+       <td></td>
+       <td></td>
+      <td></td>
+      <td class="pt-1"><div class="btn-group" style="height:20px">
+<!-- Example split danger button -->
+          <div class="btn-group">
+
+  <button type="button" class="btn btn-success pt-0" onclick="location.href='#'">Permissions</button>
+  <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split pt-0" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+
+  <ul class="dropdown-menu">
+ <li><a class="dropdown-item" href="{{ url_for('edit_purchase_requirement_item', purchase_requirement_item_id=purchase_requirement_item.id)}}">Edit</a></li>
+       <li><a class="dropdown-item" href="{{ url_for('delete_purchase_requirement_item', purchase_requirement_item_id=purchase_requirement_item.id)}}">Delete</a></li>
+      <li><a class="dropdown-item" href="{{ url_for('complete_purchase_requirement_item', purchase_requirement_item_id=purchase_requirement_item.id)}}">Done</a></li>
+  </ul>
+</div></div></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+  	  </table>
+    </div>
+  </div></div>
+
+{% if form %}
+<div class="col-lg-8 col-md-10 mx-auto" style="font-family: Times New Roman, Times, serif">
+
+
+        <!--Rendering login form here-->
+        {{render_form(form, novalidate=True, button_map={"submit": "success"}) }}
+        {{ ckeditor.load() }}
+        {{ ckeditor.config(name='description') }}
+</div>
+{% endif %}
+
+{% include 'footer.html' %}{% endblock %}

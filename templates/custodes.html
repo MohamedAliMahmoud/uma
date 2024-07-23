@@ -1,0 +1,83 @@
+{% block content %}{% include 'header.html' %}
+<header
+  class="masthead"
+  style="background-color: #609158"
+>
+  <div class="container position-relative px-4 px-lg-5">
+    <div class="row gx-4 gx-lg-5 justify-content-center">
+      <div class="col-md-10 col-lg-8 col-xl-7">
+        <div class="page-heading">
+          <h2 class="display-8" style="color:white;font-family: Times New Roman, Times, serif">All Custodes</h2>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+<div class="container">
+  <div class="row">
+    <div class="col-sm-12">
+
+      <h2 class="display-8" style="color:white;font-family: Times New Roman, Times, serif">All custodes</h2>
+
+	  <table class="table table-success table-striped table-hover">
+          <thead>
+
+
+    <tr style="color: #fff">
+      <th scope="col">Custody Id</th>
+      <th scope="col">Employee Name</th>
+      <th scope="col">Debit</th>
+        <th scope="col">Credit</th>
+        <th scope="col">Balance</th>
+        <th scope="col">User Id</th>
+        <th scope="col">Permissions</th>
+    </tr>
+  </thead>
+  <tbody>
+
+  {% for custody in custodes %}
+  <tr >
+      <th scope="row">{{ custody.id}}</th>
+      <td>{{ custody.name}}</td>
+      <td>{{ custody.debit}}</td>
+      <td>{{ custody.credit }}</td>
+      <td>{{ custody.balance }}</td>
+      <td>{{ custody.user_id }}</td>
+      <td class="pt-1"><div class="btn-group" style="height:20px">
+<!-- Example split danger button -->
+          <div class="btn-group" >
+              {% if current_user.display_employee_custody == 2 %}
+
+  <button  type="button" class="btn btn-success pt-0" onclick="location.href='{{url_for('display_user_custodes',custody_id=custody.id)}}'">Display</button>
+              {% else %}
+              <button  type="button" class="btn btn-success pt-0" onclick="location.href='#'">Permission</button>
+              {% endif %}
+  <button type="button" class="btn btn-success dropdown-toggle dropdown-toggle-split pt-0" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="visually-hidden">Toggle Dropdown</span>
+  </button>
+              {% if current_user.add_custody_cash_out == 2 or current_user.edit_employee_name == 2 %}
+  <ul class="dropdown-menu">
+      {% if current_user.add_custody_cash_out == 2%}
+    <li><a class="dropdown-item" href="{{url_for('custody_cash_out', custody_id=custody.id)}}">Custody Cash out</a></li>
+      {% endif %}
+      {% if current_user.edit_employee_name == 2 %}
+       <li><a class="dropdown-item" href="{{url_for('edit_custody_employee_name', custody_id=custody.id)}}">Edit Name</a></li>
+      {% endif %}
+  </ul>
+{% endif %}
+</div></div></td>
+
+    </tr>
+  {% endfor %}
+  </tbody>
+  	  </table>
+
+
+    </div>
+  </div>
+</div>
+
+{% include 'footer.html' %}{% endblock %}
